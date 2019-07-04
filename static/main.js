@@ -22,7 +22,7 @@ class Profile {
         console.log(`${this.name.firstName} has authorized successful!`);
         callback(err, data);
       } else {
-        console.log(`Something went wrong. Please, try again. Error 1`);
+        console.log(`Something went wrong. Please, try again. Error 1`, err);
       }
     });
   }
@@ -33,7 +33,7 @@ class Profile {
         console.log(`Adding money ${amount} of ${currency} to ${this.username}`);
         callback(err, data);
       } else {
-        console.log(`Something went wrong. Please, try again. Error 2`);
+        console.log(`Something went wrong. Please, try again. Error 2`, err);
       }
     });
   }
@@ -44,7 +44,7 @@ class Profile {
         console.log(`Converting ${fromCurrency} to ${targetAmount} NETCOINS`);
         callback(err,data);
       } else {
-        console.log(`Something went wrong. Please, try again. Error 3`);
+        console.log(`Something went wrong. Please, try again. Error 3`, err);
       }
     });
   }       
@@ -56,31 +56,24 @@ class Profile {
           //callback({to, amount}); ???
           callback(err, data);
       } else {
-        console.log(`Something went wrong. Please, try again. Error 4`);
+        console.log(`Something went wrong. Please, try again. Error 4`, err);
       }
     });
   }
 }
  
-//let stocks = [];  
-  //Сохраните данные, полученные в результате вызова getStocks, в переменную.
-  //Метод getStocks возвращает массив из 100 объектов следующего вида:
 function getStocks(callback) {
   let stocks = []; // ???
   return ApiConnector.getStocks((err, data) => {
     if (data) {
-      /*for (let i = 0; i < data.length; i++) {
-        //stocks.push(data[i]);
-        stocks[i] = data[i];
-      }*/
       console.log(`Getting stocks info`);
       callback(err, data);
     } else {
-        console.log(`Something went wrong. Please, try again. Error 5`);
+        console.log(`Something went wrong. Please, try again. Error 5`, err);
     } 
   });
 }
-let stocks = getStocks(); // ??? не пойму: здесь, или на 69 строке, или вообще не там))
+
  
 function main() {
   const Ilya = new Profile({
@@ -94,46 +87,39 @@ function main() {
       name: {firstName: 'Tugarin', lastName: 'Zmey'},
       password: 'abcde'
   });
- 
-  Ilya.createUser(function() {
-    Ilya.performLogin(function() {
-      Ilya.addMoney({currency: 'EUR', amount: 500000}, function() {
-        Ilya.convertMoney({fromCurrency: 'EUR', targetCurrency: 'NETCOIN', targetAmount: 2000}, function() {
-          Tugarin.createUser(function() {
-            Ilya.transferMoney({to: 'tugarin', amount: 1000}, function({to, amount}) {                           
-              console.log(` ${to}  ${Tugarin.name.firstName} has got ${amount} NETCOINS`);  
+  
+  getStocks(function(err, data) {
+    let stocks = data;
+    console.log(data); // посмотрите, что будет выведено в консоль
+    
+    if (err){
+      console.log(`Something went wrong. Please, try again. Error`, err);  //?? нужно ли??
+    }
+    
+    let stock = data[99]; //????
+    
+    Ilya.createUser(function() {
+      Ilya.performLogin(function() {
+        let wallet = {currency: 'EUR', amount: 500000};
+        Ilya.addMoney(wallet, function() {
+          //let converting = stocks[99] * wallet.amount;   
+          //let converting = stock * wallet.amount;
+          let converting = stock['EUR_NETCOIN'] * wallet.amount;
+          Ilya.convertMoney({fromCurrency: 'EUR', targetCurrency: 'NETCOIN', targetAmount: converting}, function() {
+            Tugarin.createUser(function() {
+              //Ilya.transferMoney({to: 'tugarin', amount: 1000}, function({err, data}) {
+              Ilya.transferMoney({to: 'tugarin', amount: 1000}, function() {
+                         
+                //console.log(` ${to}  ${Tugarin.name.firstName} has got ${amount} NETCOINS`);  
+                console.log(`Tugarin has got 1000 NETCOINS`);
+                
+              });
             });
           });
         });
       });
     });
   });
- 
 }
  
-main();  //так вызывать или как на строках 116-118 ????
-/*
-getStocks(function() {
-  main();
-});
-*/ 
- 
- /* ИЛИ ВСЁ ТАКИ НУЖНО все делать как в примерах в задании диплома ??
-function main(){
-    const Ivan = new Profile({
-                    username: 'ivan',
-                    name: { firstName: 'Ivan', lastName: 'Chernyshev' },
-                    password: 'ivanspass',
-                });
-    // сначала создаем и авторизуем пользователя
-
-    // после того, как мы авторизовали пользователя, добавляем ему денег в кошелек
-    Ivan.addMoney({ currency: 'RUB', amount: 100 }, (err, data) => {
-        if (err) {
-                console.error('Error during adding money to Ivan');
-        } else {
-                console.log(`Added 500000 euros to Ivan`);
-        });
-}
-
-main(); */ 
+main();  
