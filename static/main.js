@@ -96,7 +96,7 @@ function main() {
       console.log(`Something went wrong. Please, try again. Error`, err);  //?? нужно ли??
     }
     
-    let stock = data[99]; //????
+    let stock = data[data.length - 1]; 
     
     Ilya.createUser(function() {
       Ilya.performLogin(function() {
@@ -108,10 +108,10 @@ function main() {
           Ilya.convertMoney({fromCurrency: 'EUR', targetCurrency: 'NETCOIN', targetAmount: converting}, function() {
             Tugarin.createUser(function() {
               //Ilya.transferMoney({to: 'tugarin', amount: 1000}, function({err, data}) {
-              Ilya.transferMoney({to: 'tugarin', amount: 1000}, function() {
+              Ilya.transferMoney({to: 'tugarin', amount: converting}, function() {
                          
                 //console.log(` ${to}  ${Tugarin.name.firstName} has got ${amount} NETCOINS`);  
-                console.log(`Tugarin has got 1000 NETCOINS`);
+                console.log(`Tugarin has got ${converting} NETCOINS`);
                 
               });
             });
